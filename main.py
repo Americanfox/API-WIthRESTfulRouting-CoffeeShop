@@ -28,25 +28,9 @@ class Cafe(db.Model):
     can_take_calls = db.Column(db.Boolean, nullable=False)
     coffee_price = db.Column(db.String(250), nullable=True)
 
-    # Section 553: 2
+    
     def to_dict(self):
-    #     Method 1:
-    #     dictionary = {}
-    # Loop through each column in the data record
-    #     for column in self.__table__.columns:
-    # Create a new dictionary entry;
-    # where the key is the name of the column
-    # and the value is the value of the column
-    #         dictionary[column.name] = getattr(self, column.name)
-    #     return dictionary
-
-    # Method 2. Altenatively use Dictionary Comprehension to do the same thing.
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
-
-    #TODO: MIGHT NEED THIS LATER
-    # def __repr__(self):
-    #     return f'<Cafe {self.name}'
-
 
 with app.app_context():
     db.create_all()
@@ -63,31 +47,8 @@ def get_random_cafe():
     random_cafe = random.choice(all_cafe)
     print(random_cafe)
 
-    # Turn random_cafe Object into a Json. This is called serialization: Flask has a serialization method called jsonify() Documentation: https://www.adamsmith.haus/python/docs/flask.jsonify
-    #The Following is going to be the long method. Refer to def to_dict to automize and make the code more effecient:
-    # return jsonify(cafe={
-    #     #'id': random_cafe.id,
-    #     'name': random_cafe.name,
-    #     'map_url': random_cafe.map_url,
-    #     'img_url': random_cafe.img_url,
-    #     'location': random_cafe.location,
-    #     'seats': random_cafe.seats,
-    #
-    #     'amenities': {
-    #         'has_toilet': random_cafe.has_toilet,
-    #         'has_wifi': random_cafe.has_wifi,
-    #         'has_sockets': random_cafe.has_sockets,
-    #         'can_take_calls': random_cafe.can_take_calls,
-    #         'coffee_price': random_cafe.coffee_price}
-    #
-    # })
-
-    # This is the short version to the code above. It plays from method 2 out of def to_dict to produce the return
     return jsonify(cafe=random_cafe.to_dict())
     
-
-# HTTP GET - Read Record
-# Includes Section 552: 1
 @app.route('/all', methods=['GET'])
 def get_all_cafe():
     # Creates a dictionary to put the db into.
@@ -101,7 +62,6 @@ def get_all_cafe():
         cafes['cafes'].append(cafe)
     return jsonify(cafes)
 
-# Includes Section 553
 @app.route('/search', methods=['GET'])
 def search():
     # Pulls the location information from the user
